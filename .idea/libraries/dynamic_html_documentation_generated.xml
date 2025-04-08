@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="dynamic-html-documentation-generated">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/api/dynamic-html-documentation-generated.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
