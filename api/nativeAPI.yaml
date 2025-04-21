@@ -1,0 +1,355 @@
+openapi: 3.0.3
+info:
+  title: FrogCrew API
+  version: 1.0.0
+  description: Single‑schema design (all fields required, user supplies their own IDs)
+
+servers:
+  - url: https://localhost:8080
+
+# ─────────────────────────────── PATHS ─────────────────────────────────────────
+paths:
+
+  /auth/login:
+    post:
+      summary: Authenticate user (Basic → JWT)
+      parameters:
+        - in: query
+          name: email
+          required: true
+          schema: { type: string, format: email }
+        - in: query
+          name: password
+          required: true
+          schema: { type: string, format: password }
+      responses:
+        '200':
+          description: Login success
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AuthToken' }
+        '401':
+          description: Bad credentials
+
+  # ── CREWMEMBER ───────────────────────────────────────────────────────────────
+  /crewMember:
+    post:
+      summary: Create crew member (client supplies crewMemberID)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CrewMember' }
+      responses:
+        '200':
+          description: Crew member stored
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CrewMember' }
+
+    get:
+      summary: List all crew members
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/CrewMember' }
+
+  /crewMember/{crewMemberID}:
+    parameters:
+      - in: path
+        name: crewMemberID
+        required: true
+        schema: { type: integer }
+    get:
+      summary: Get crew member by ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CrewMember' }
+        '404': { description: Not found }
+    delete:
+      summary: Delete a crewmember's account
+      responses:
+        '200': { description: Deleted }
+        '404': { description: Not found }
+
+  # ── GAME ─────────────────────────────────────────────────────────────────────
+  /game:
+    post:
+      summary: Create game (client supplies gameID)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Game' }
+      responses:
+        '200':
+          description: Game stored
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Game' }
+
+    get:
+      summary: List games
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Game' }
+
+  /game/{gameID}:
+    parameters:
+      - in: path
+        name: gameID
+        required: true
+        schema: { type: integer }
+    get:
+      summary: Get game by ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Game' }
+        '404': { description: Not found }
+
+  # ── SCHEDULE ────────────────────────────────────────────────────────────────
+  /schedule:
+    post:
+      summary: Create schedule (client supplies scheduleID)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Schedule' }
+      responses:
+        '200':
+          description: Schedule stored
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Schedule' }
+
+  /schedule/{scheduleID}:
+    parameters:
+      - in: path
+        name: scheduleID
+        required: true
+        schema: { type: integer }
+    get:
+      summary: Get schedule by ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Schedule' }
+        '404': { description: Not found }
+    patch:
+      summary: Append gameIDs to gameListIDs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gameListIDs:
+                  type: array
+                  items: { type: integer }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Schedule' }
+        '404': { description: Not found }
+
+  # ── CREW LIST PER GAME ───────────────────────────────────────────────────────
+  /crewSchedule/{gameID}:
+    parameters:
+      - in: path
+        name: gameID
+        required: true
+        schema: { type: integer }
+    get:
+      summary: Get crew list for game
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/CrewMember' }
+        '404': { description: Game not found }
+
+    put:
+      summary: Replace crew list for game
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items: { $ref: '#/components/schemas/CrewMember' }
+      responses:
+        '200': { description: Saved }
+        '404': { description: Game not found }
+
+  # ── AVAILABILITY ─────────────────────────────────────────────────────────────
+  /availability:
+    post:
+      summary: Submit availability
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Availability' }
+      responses:
+        '200':
+          description: Stored
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Availability' }
+
+    get:
+      summary: List all availability
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Availability' }
+
+  # ── INVITE ───────────────────────────────────────────────────────────────────
+  /invite:
+    post:
+      summary: Send invite emails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/InviteRequest' }
+      responses:
+        '200':
+          description: Sent
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InviteResponse' }
+
+  /invite/{token}:
+    parameters:
+      - in: path
+        name: token
+        required: true
+        schema: { type: string }
+    get:
+      summary: Validate invite token
+      responses:
+        '200':
+          description: Valid
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InviteValidation' }
+        '404': { description: Invalid/expired }
+
+# ───────────────────────────── COMPONENT SCHEMAS ──────────────────────────────
+components:
+  schemas:
+
+    # Auth
+    AuthToken:
+      type: object
+      required: [userId, role, token]
+      properties:
+        userId: { type: integer }
+        role:   { type: string, enum: [ADMIN, USER] }
+        token:  { type: string }
+        expiresAt: { type: string, format: date-time, nullable: true }
+
+    # CrewMember
+    CrewMember:
+      type: object
+      required:
+        [crewMemberID, firstName, lastName, email, phoneNumber, password, role]
+      properties:
+        crewMemberID: { type: integer }
+        firstName:    { type: string }
+        lastName:     { type: string }
+        email:        { type: string, format: email }
+        phoneNumber:  { type: string }
+        password:     { type: string, format: password }
+        role:         { type: string, enum: [ADMIN, USER] }
+
+    # Game
+    Game:
+      type: object
+      required:
+        [gameID, scheduleID, gameDate, gameTime, venue, opponent, crewListIDs]
+      properties:
+        gameID:     { type: integer }
+        scheduleID: { type: integer}
+        gameDate:   { type: string}
+        gameTime:   { type: string}
+        venue:      { type: string }
+        opponent:   { type: string }
+        crewListIDs:
+          type: array
+          items: { type: integer }
+          description: list of crewMembers' IDs (may be empty)
+
+    # Schedule
+    Schedule:
+      type: object
+      required: [scheduleID, sport, season, gameListIDs]
+      properties:
+        scheduleID: { type: integer }
+        sport:      { type: string }
+        season:     { type: string }
+        gameListIDs:
+          type: array
+          items: {}
+          description: ids of games in this schedule (may be empty)
+
+    # Availability
+    Availability:
+      type: object
+      required: [crewMemberID, comment]
+      properties:
+        crewMemberID: { type: integer }
+        comment:      { type: string }
+
+    # Invite
+    InviteRequest:
+      type: object
+      required: [emails]
+      properties:
+        emails:
+          type: array
+          items: { type: string, format: email }
+
+    InviteResponse:
+      type: object
+      required: [sent]
+      properties:
+        sent:
+          type: array
+          items: { type: string, format: email }
+
+    InviteValidation:
+      type: object
+      required: [valid, token]
+      properties:
+        valid: { type: boolean }
+        token: { type: string }

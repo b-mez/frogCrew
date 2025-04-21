@@ -1,10 +1,8 @@
-package team.projectpulse.system.exception;
+package main.java.edu.tcu.cs.frogcrew.system.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import team.projectpulse.system.Result;
-import team.projectpulse.system.StatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,6 +21,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import team.projectpulse.system.Result;
+import team.projectpulse.system.StatusCode;
 
 import java.util.HashMap;
 import java.util.List;

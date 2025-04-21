@@ -1,4 +1,4 @@
-package team.projectpulse.system;
+package main.java.edu.tcu.cs.frogcrew.system;
 
 /**
  * This class defines the schema of the response. It is used to encapsulate data prepared by

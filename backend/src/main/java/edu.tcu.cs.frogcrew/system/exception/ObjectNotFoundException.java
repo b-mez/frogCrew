@@ -1,4 +1,4 @@
-package team.projectpulse.system.exception;
+package main.java.edu.tcu.cs.frogcrew.system.exception;
 
 public class ObjectNotFoundException extends RuntimeException {
 
@@ -8,6 +8,10 @@ public class ObjectNotFoundException extends RuntimeException {
 
     public ObjectNotFoundException(String objectName, String property) {
         super("Could not find " + objectName + " with this property: " + property + " :(");
+    }
+
+    public ObjectNotFoundException(String message) {
+        super(message);
     }
 
 }
