@@ -41,15 +41,13 @@ const Layout = () => {
                 <span className="bg-secondary text-primary text-xs px-2 py-1 rounded-full">
                   {user.role}
                 </span>
-                {process.env.NODE_ENV === 'development' && (
-                  <button
-                    onClick={toggleUserRole}
-                    className="bg-secondary text-primary px-3 py-1 rounded-md hover:bg-gray-100 text-sm"
-                    title="Toggle between ADMIN and USER role for testing"
-                  >
-                    Toggle Role
-                  </button>
-                )}
+                <button
+                  onClick={toggleUserRole}
+                  className="bg-secondary text-primary px-3 py-1 rounded-md hover:bg-gray-100 text-sm"
+                  title="Toggle between ADMIN and USER role"
+                >
+                  Toggle Role
+                </button>
                 <button 
                   onClick={logout}
                   className="bg-white text-primary px-3 py-1 rounded-md hover:bg-gray-100"
