@@ -57,22 +57,18 @@ export const AuthProvider = ({ children }) => {
 
   // For testing purposes - auto-login with credentials if no user
   useEffect(() => {
-    const autoLogin = async () => {
-      if (process.env.NODE_ENV === 'development' && !user) {
-        try {
-          // Try to login as admin
-          await login({ 
-            email: 'admin@example.com', 
-            password: 'adminpass' 
-          });
-        } catch (error) {
-          console.error('Auto-login failed:', error);
-        }
-      }
-    };
-    
-    if (!loading && !user) {
-      autoLogin();
+    if (process.env.NODE_ENV === 'development' && !loading) {
+      // Hard-code admin user for development
+      const adminUser = {
+        id: 3,
+        name: 'Jack Admn',
+        email: 'admin@example.com',
+        role: 'ADMIN',
+        token: 'fake-jwt-token'
+      };
+      
+      setUser(adminUser);
+      localStorage.setItem('user', JSON.stringify(adminUser));
     }
   }, [loading]);
 

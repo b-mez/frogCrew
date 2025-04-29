@@ -4,17 +4,47 @@ const InviteCrew = () => {
   const [emails, setEmails] = useState('');
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      setMessage('Invitations sent successfully!');
-      setEmails('');
-    }, 1500);
+    // Create invitation data with email and selected role
+    const invitationData = {
+      email: emails.trim(),
+      role: isAdmin ? 'ADMIN' : 'USER'
+    };
+    
+    // Send invitation data to API
+    fetch('/api/crew-members/invite', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(invitationData),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to send invitation');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setIsLoading(false);
+        setMessage('Invitation sent successfully!');
+        setEmails('');
+        setIsAdmin(false); // Reset role selection
+      })
+      .catch(error => {
+        console.error('Error sending invitation:', error);
+        setIsLoading(false);
+        setMessage('Failed to send invitation. Please try again.');
+      });
+  };
+
+  const toggleRole = () => {
+    setIsAdmin(!isAdmin);
   };
 
   return (
@@ -23,7 +53,7 @@ const InviteCrew = () => {
       
       <div className="bg-white rounded-lg shadow-md p-6">
         <p className="text-gray-600 mb-6">
-          Send invitation emails to new crew members. Enter one email address per line.
+          Send an invitation email to a new crew member.
         </p>
         
         {message && (
@@ -35,7 +65,7 @@ const InviteCrew = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="emails" className="block text-gray-700 font-medium mb-2">
-              Email Addresses
+              User Email Address
             </label>
             <textarea
               id="emails"
@@ -43,11 +73,40 @@ const InviteCrew = () => {
               onChange={(e) => setEmails(e.target.value)}
               className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-primary"
               rows={6}
-              placeholder="john.doe@example.com&#10;jane.smith@example.com"
+              placeholder="super.frog@tcu.edu"
               required
             />
             <p className="text-sm text-gray-500 mt-1">
-              Enter one email address per line
+              Enter the new user's email address in the text box above.
+            </p>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">
+              User Role
+            </label>
+            <div className="flex items-center">
+              <span className={`mr-2 ${isAdmin ? 'text-gray-500' : 'font-semibold text-primary'}`}>
+                Regular User
+              </span>
+              <button 
+                type="button"
+                className="relative inline-flex items-center h-6 rounded-full w-11 focus:outline-none"
+                onClick={toggleRole}
+              >
+                <span className={`${isAdmin ? 'bg-primary' : 'bg-gray-300'} absolute block w-11 h-6 rounded-full transition-colors duration-300 ease-in-out`}></span>
+                <span 
+                  className={`${
+                    isAdmin ? 'translate-x-6 bg-white' : 'translate-x-1 bg-white'
+                  } absolute block w-4 h-4 rounded-full transition duration-300 ease-in-out`}
+                ></span>
+              </button>
+              <span className={`ml-2 ${isAdmin ? 'font-semibold text-primary' : 'text-gray-500'}`}>
+                Admin
+              </span>
+            </div>
+            <p className="text-sm text-gray-500 mt-1">
+              Toggle to select whether the invited user will have regular or admin privileges.
             </p>
           </div>
           
@@ -58,7 +117,7 @@ const InviteCrew = () => {
             }`}
             disabled={isLoading}
           >
-            {isLoading ? 'Sending...' : 'Send Invitations'}
+            {isLoading ? 'Sending...' : 'Send Invitation'}
           </button>
         </form>
       </div>

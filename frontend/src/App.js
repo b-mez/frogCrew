@@ -8,6 +8,7 @@ import Schedules from './pages/Schedules';
 import CrewDirectory from './pages/CrewDirectory';
 import CrewProfile from './pages/CrewProfile';
 import InviteCrew from './pages/InviteCrew';
+import Availability from './pages/Availability';
 import NotFound from './pages/NotFound';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -30,6 +31,7 @@ function App() {
           <Route path="schedules/:scheduleId" element={<Schedules />} />
           <Route path="crew-directory" element={<CrewDirectory />} />
           <Route path="crew-directory/:id" element={<CrewProfile />} />
+          <Route path="availability" element={<Availability />} />
           <Route 
             path="invite-crew" 
             element={
