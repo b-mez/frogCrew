@@ -55,10 +55,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // For testing purposes - auto-login with credentials if no user
+  // Auto-login with admin credentials if no user is logged in
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && !loading) {
-      // Hard-code admin user for development
+    if (!loading && !user) {
+      // Hard-code admin user for demo
       const adminUser = {
         id: 3,
         name: 'Jack Admn',
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
       setUser(adminUser);
       localStorage.setItem('user', JSON.stringify(adminUser));
     }
-  }, [loading]);
+  }, [loading, user]);
 
   return (
     <AuthContext.Provider 
@@ -90,7 +90,11 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
 
 export default AuthContext; 

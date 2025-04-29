@@ -5,14 +5,12 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 
-// Start MSW in development environment
+// Start MSW in both development and production
 async function startMSW() {
-  if (process.env.NODE_ENV === 'development') {
-    const { worker } = await import('./mocks/browser');
-    worker.start({
-      onUnhandledRequest: 'bypass', // Requests without handlers will pass through
-    });
-  }
+  const { worker } = await import('./mocks/browser');
+  worker.start({
+    onUnhandledRequest: 'bypass', // Requests without handlers will pass through
+  });
 }
 
 // Initialize MSW
