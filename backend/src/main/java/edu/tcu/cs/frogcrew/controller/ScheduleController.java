@@ -20,10 +20,7 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    /**
-     * POST /schedule
-     * createSchedule
-     */
+    //POST /schedule
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Result createSchedule(@Valid @RequestBody Schedule schedule) {
@@ -36,10 +33,7 @@ public class ScheduleController {
         );
     }
 
-    /**
-     * PUT /schedule/{scheduleId}
-     * addGames
-     */
+    //PUT /schedule/{scheduleId}
     @PutMapping("/{scheduleId}")
     @ResponseStatus(HttpStatus.CREATED)
     public Result addGames(
@@ -55,10 +49,7 @@ public class ScheduleController {
         );
     }
 
-    /**
-     * GET /schedule
-     * findAllSchedules
-     */
+    //GET /schedule
     @GetMapping
     public Result findAllSchedules() {
         List<Schedule> list = scheduleService.findAllSchedules();
@@ -70,10 +61,7 @@ public class ScheduleController {
         );
     }
 
-    /**
-     * GET /schedule/{scheduleId}
-     * findById
-     */
+    //GET /schedule/{scheduleId}
     @GetMapping("/{scheduleId}")
     public Result findById(@PathVariable Integer scheduleId) {
         Schedule found = scheduleService.findById(scheduleId);

@@ -20,10 +20,7 @@ public class AvailabilityController {
         this.availabilityService = availabilityService;
     }
 
-    /**
-     * POST /availability
-     * createAvailability
-     */
+    //POST /availability
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Result createAvailability(@Valid @RequestBody Availability availability) {
@@ -36,10 +33,7 @@ public class AvailabilityController {
         );
     }
 
-    /**
-     * PUT /availability/{id}
-     * updateAvailability
-     */
+    //PUT /availability/{id}
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Result updateAvailability(
@@ -55,10 +49,7 @@ public class AvailabilityController {
         );
     }
 
-    /**
-     * GET /availability
-     * getAvailability
-     */
+    //GET /availability
     @GetMapping
     public Result getAvailability() {
         List<Availability> all = availabilityService.findAll();
@@ -70,10 +61,7 @@ public class AvailabilityController {
         );
     }
 
-    /**
-     * GET /availability/crew/{crewMemberId}
-     * getAvailabilityByCrewMember
-     */
+    //GET /availability/crew/{crewMemberId}
     @GetMapping("/crew/{crewMemberId}")
     public Result getAvailabilityByCrewMember(@PathVariable Integer crewMemberId) {
         List<Availability> list = availabilityService.listAllAvailability(crewMemberId);

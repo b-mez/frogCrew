@@ -12,7 +12,6 @@ public class Availability {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "crew_member_id", nullable = false)
     private CrewMember crewMember;
 
     @NotBlank(message = "comment is required")

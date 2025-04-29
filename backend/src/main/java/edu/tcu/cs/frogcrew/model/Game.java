@@ -13,31 +13,20 @@ public class Game {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "game_id")
     private Integer gameID;
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
 
-    @Column(nullable = false)
     private LocalDate gameDate;
 
-    @Column(nullable = false)
     private LocalTime gameTime;
 
-    @Column(nullable = false)
     private String venue;
 
-    @Column(nullable = false)
     private String opponent;
 
     @ManyToMany
-    @JoinTable(
-            name = "game_crew",
-            joinColumns = @JoinColumn(name = "game_id"),
-            inverseJoinColumns = @JoinColumn(name = "crew_member_id")
-    )
     private List<CrewMember> crewList;
 
     public Game() {}

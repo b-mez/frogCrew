@@ -26,7 +26,7 @@ public class AuthService {
 
     //Authenticate using email/password, generate a JWT, and return an AuthToken DTO.
     public AuthTokenDto login(LoginRequestDto credentials) {
-        // 1. Delegate to AuthenticationManager (uses your CustomUserDetailsService + BCrypt)
+        // Delegate to AuthenticationManager (uses your CustomUserDetailsService + BCrypt)
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         credentials.email(),
@@ -34,17 +34,17 @@ public class AuthService {
                 )
         );
 
-        // 2. Our custom principal holds the CrewMember
+        // custom principal holds the CrewMember
         MyUserPrincipal principal = (MyUserPrincipal) auth.getPrincipal();
 
-        // 3. Generate a signed JWT
+        // Generate a signed JWT
         String token = jwtProvider.generateToken(principal);
 
-        // 4. Parse it back to get the expiration timestamp
+        // Parse it back to get the expiration timestamp
         Jwt parsedJwt = jwtProvider.validateToken(token);
         Instant expiresAt = parsedJwt.getExpiresAt();
 
-        // 5. Build and return the AuthToken DTO
+        // Build and return the AuthToken DTO
         return new AuthTokenDto(
                 principal.getCrewMember().getCrewMemberID(),
                 principal.getCrewMember().getRole(),

@@ -21,13 +21,6 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-//@WebMvcTest(ScheduleController.class)
-//@ActiveProfiles("dev")
-//@ExtendWith(org.springframework.test.context.junit.jupiter.SpringExtension.class)
-//@SpringBootTest(
-//        classes = edu.tcu.cs.frogcrew.FrogCrewBackendApplication.class,
-//        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-//)
 @WebMvcTest(ScheduleController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("dev")
@@ -103,7 +96,6 @@ class ScheduleControllerTest {
 
     @Test
     void addGames_appendsAndReturnsUpdatedSchedule() throws Exception {
-        // imagine we append gameIds [10,20] and get back the same sched
         given(scheduleService.addGames(eq(1), anyList())).willReturn(sched);
 
         // send a JSON array of ints as the request body

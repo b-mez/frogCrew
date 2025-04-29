@@ -24,11 +24,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    /**
-     * POST /auth/login
-     * Accepts LoginRequestDto { email, password } in JSON body,
-     * returns JWT wrapped in Result.
-     */
+    //POST /auth/login
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public Result login(@Valid @RequestBody LoginRequestDto request) {
@@ -41,11 +37,7 @@ public class AuthController {
         );
     }
 
-    /**
-     * GET /auth/loginSuccess
-     * After the client sends back the Bearer token, Spring will decode it
-     * and inject it here as a Jwt.  Now getExpiresAt() will never be null.
-     */
+    //GET /auth/loginSuccess
     @GetMapping("/loginSuccess")
     public Result loginSuccess(@AuthenticationPrincipal Jwt jwt) {
         // grab whatever you need out of the Jwt

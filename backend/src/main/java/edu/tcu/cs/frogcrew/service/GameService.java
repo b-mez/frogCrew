@@ -28,7 +28,6 @@ public class GameService {
         return gameRepository.findBySchedule_ScheduleID(scheduleId);
     }
 
-    //Basic CRUD for games
     public List<Game> findAll() {
         return gameRepository.findAll();
     }

@@ -14,29 +14,23 @@ import java.util.List;
 public class CrewMember implements Serializable {
 
     @Id
-    @Column(name = "crew_member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer crewMemberID;
 
     @NotBlank
-    @Column(nullable = false)
     private String firstName;
 
     @NotBlank
-    @Column(nullable = false)
     private String lastName;
 
     @Email
     @NotBlank
-    @Column(nullable = false, unique = true)
     private String email;
 
     @Pattern(regexp = "\\d{3}-\\d{3}-\\d{4}")
-    @Column(nullable = false)
     private String phoneNumber;
 
     @NotBlank
-    @Column(nullable = false)
     private String password;
 
     @NotNull

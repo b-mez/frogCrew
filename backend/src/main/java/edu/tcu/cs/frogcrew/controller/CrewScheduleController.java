@@ -20,10 +20,7 @@ public class CrewScheduleController {
         this.crewScheduleService = crewScheduleService;
     }
 
-    /**
-     * GET /crewSchedule/{gameId}
-     * getCrewMembersForGame
-     */
+    //GET /crewSchedule/{gameId}
     @GetMapping("/{gameId}")
     public Result getCrewMembersForGame(@PathVariable Integer gameId) {
         List<CrewMember> crew = crewScheduleService.getCrewForGame(gameId);
@@ -35,10 +32,7 @@ public class CrewScheduleController {
         );
     }
 
-    /**
-     * PUT /crewSchedule/{gameId}
-     * replaceCrewForGame
-     */
+    //UT /crewSchedule/{gameId}
     @PutMapping("/{gameId}")
     @ResponseStatus(HttpStatus.CREATED)
     public Result replaceCrewForGame(

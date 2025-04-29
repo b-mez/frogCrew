@@ -17,6 +17,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,7 +71,7 @@ class AuthServiceTest {
 
         when(authResult.getPrincipal()).thenReturn(principal);
 
-        // mock jwtProvider.generateToken(...) → a fake JWT
+        // mock jwtProvider.generateToken
         when(jwtProvider.generateToken(principal)).thenReturn("fake-jwt-token");
 
         // call service

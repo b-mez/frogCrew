@@ -21,10 +21,7 @@ public class InviteController {
         this.inviteService = inviteService;
     }
 
-    /**
-     * POST /invite
-     * sendInvites
-     */
+    //POST /invite
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Result sendInvites(@Valid @RequestBody InviteRequestDto request) {
@@ -40,10 +37,7 @@ public class InviteController {
 
 
 
-    /**
-     * GET /invite/{token}
-     * validate
-     */
+    //GET /invite/{token}
     @GetMapping("/{token}")
     public Result validate(@PathVariable String token) {
         InviteToken validation = inviteService.validateInviteToken(token);
