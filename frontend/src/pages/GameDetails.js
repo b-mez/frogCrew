@@ -24,6 +24,23 @@ const GameDetails = () => {
           throw new Error('Failed to fetch game details');
         }
         const gameData = await gameResponse.json();
+        
+        // Fetch schedule information if the game has a scheduleID
+        if (gameData.scheduleID) {
+          const scheduleResponse = await fetch(`/api/schedules/${gameData.scheduleID}`);
+          if (scheduleResponse.ok) {
+            const scheduleData = await scheduleResponse.json();
+            // Add sport information from the schedule
+            gameData.sport = scheduleData.sport;
+          } else {
+            // If schedule fetch fails, set sport to Unassigned
+            gameData.sport = 'Unassigned';
+          }
+        } else {
+          // If no scheduleID, set sport to Unassigned
+          gameData.sport = 'Unassigned';
+        }
+        
         setGame(gameData);
 
         // Fetch crew assignments for this game

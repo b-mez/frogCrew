@@ -31,12 +31,8 @@ const CrewProfile = () => {
     fetchCrewMember();
   }, [id]);
 
-  // Redirect non-admin users trying to view other profiles
-  useEffect(() => {
-    if (!loading && !error && crewMember && !isAdmin && user?.id !== crewMember.crewMemberID) {
-      navigate('/crew-directory');
-    }
-  }, [crewMember, isAdmin, loading, error, navigate, user]);
+  // No longer redirect non-admin users trying to view other profiles
+  // They can now view limited information (email only)
 
   const handleDelete = async () => {
     if (!window.confirm(`Are you sure you want to delete ${crewMember.firstName} ${crewMember.lastName}? This action cannot be undone.`)) {
@@ -74,6 +70,9 @@ const CrewProfile = () => {
   if (!crewMember) {
     return <div className="text-center py-8">Crew member not found</div>;
   }
+
+  // Determine if the current user is viewing their own profile
+  const isOwnProfile = user && user.id === parseInt(id);
 
   return (
     <div>
@@ -115,7 +114,8 @@ const CrewProfile = () => {
           </div>
         )}
         
-        {isAdmin || (user && user.id === parseInt(id)) ? (
+        {isAdmin || isOwnProfile ? (
+          // Full profile view for admins and profile owners
           <div className="p-6">
             <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
             
@@ -141,10 +141,22 @@ const CrewProfile = () => {
             </div>
           </div>
         ) : (
-          <div className="p-6 text-center">
-            <p className="text-gray-600">
-              Detailed information is only available to administrators or to your own profile.
-            </p>
+          // Limited profile view for regular users viewing other profiles
+          <div className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Contact Information</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-gray-600 text-sm">Email</p>
+                <p className="font-medium">{crewMember.email}</p>
+              </div>
+            </div>
+            
+            <div className="mt-6 p-4 bg-gray-50 rounded-md">
+              <p className="text-gray-600 text-sm">
+                Additional information is only available to administrators or to your own profile.
+              </p>
+            </div>
           </div>
         )}
       </div>

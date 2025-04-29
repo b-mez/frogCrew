@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Games = () => {
   const [games, setGames] = useState([]);
+  const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,21 +13,39 @@ const Games = () => {
   const { isAdmin } = useAuth();
 
   useEffect(() => {
-    const fetchGames = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('/api/games');
-        if (!response.ok) {
+        setLoading(true);
+        
+        // Fetch games
+        const gamesResponse = await fetch('/api/games');
+        if (!gamesResponse.ok) {
           throw new Error('Failed to fetch games');
         }
-        const data = await response.json();
+        const gamesData = await gamesResponse.json();
         
-        // Convert date strings to Date objects for easier sorting
-        const processedData = data.map(game => ({
+        // Fetch schedules
+        const schedulesResponse = await fetch('/api/schedules');
+        if (!schedulesResponse.ok) {
+          throw new Error('Failed to fetch schedules');
+        }
+        const schedulesData = await schedulesResponse.json();
+        
+        // Create a map of schedule IDs to sports
+        const scheduleMap = {};
+        schedulesData.forEach(schedule => {
+          scheduleMap[schedule.scheduleID] = schedule.sport;
+        });
+        
+        // Add sport information to each game
+        const processedGames = gamesData.map(game => ({
           ...game,
+          sport: game.scheduleID ? scheduleMap[game.scheduleID] : 'Unassigned',
           gameDateObj: new Date(game.gameDate)
         }));
         
-        setGames(processedData);
+        setGames(processedGames);
+        setSchedules(schedulesData);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -34,7 +53,7 @@ const Games = () => {
       }
     };
 
-    fetchGames();
+    fetchData();
   }, []);
 
   // Filter games based on search term
@@ -204,7 +223,7 @@ const Games = () => {
                   </div>
                   <div className="flex items-center">
                     <span className="bg-primary text-white text-xs px-2 py-1 rounded-full">
-                      {game.sport || 'N/A'}
+                      {game.sport || 'Unassigned'}
                     </span>
                   </div>
                   <div>{game.opponent || 'N/A'}</div>
