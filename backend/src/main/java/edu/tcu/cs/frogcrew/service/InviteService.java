@@ -30,10 +30,7 @@ public class InviteService {
         this.mailSender = mailSender;
     }
 
-    /**
-     * UC‑14: Generate an invitation token for each email, persist it, and send out emails.
-     * Returns the list of emails that were successfully sent.
-     */
+    //UC‑14: Generate an invitation token for each email, persist it, and send out emails.
     public List<String> sendInvites(InviteRequestDto emails) {
         List<String> sent = new ArrayList<>();
 
@@ -47,22 +44,12 @@ public class InviteService {
             invite.setExpiresAt(expiresAt);
             inviteTokenRepository.save(invite);
 
-              // send the email (details omitted)
-              // emailService.sendInvite(email, token);
-              // sendInviteEmail(email, token);
-
             sent.add(email);
         }
 
         return sent;
     }
 
-    /**
-     * 1) Look up the token string in the DB
-     * 2) Throw if it doesn’t exist
-     * 3) Throw if it’s expired
-     * 4) Otherwise return it
-     */
     public InviteToken validateInviteToken(String tokenString) {
         InviteToken invite = inviteTokenRepository
                 .findByToken(tokenString)
@@ -89,7 +76,7 @@ public class InviteService {
                     StandardCharsets.UTF_8.name()
             );
 
-            // Build your registration link
+            // Build registration link
             String link = "http://localhost:8080/register?token=" + token;
 
             // Set the To/From/Subject

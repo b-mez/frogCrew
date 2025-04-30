@@ -19,10 +19,7 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    /**
-     * GET /game
-     * List all games
-     */
+    //GET /game
     @GetMapping
     public Result listGames() {
         List<Game> games = gameService.findAll();
@@ -34,10 +31,7 @@ public class GameController {
         );
     }
 
-    /**
-     * GET /game/schedule/{sid}/games
-     * List games for a given schedule
-     */
+    //GET /game/schedule/{sid}/games
     @GetMapping("/schedule/{sid}/games")
     public Result listBySchedule(@PathVariable Integer sid) {
         List<Game> games = gameService.getGamesBySchedule(sid);
@@ -49,10 +43,7 @@ public class GameController {
         );
     }
 
-    /**
-     * GET /game/crew/{mid}/games
-     * List games for a given crew member
-     */
+    //GET /game/crew/{mid}/games
     @GetMapping("/crew/{mid}/games")
     public Result listByMember(@PathVariable Integer mid) {
         List<Game> games = gameService.getGamesForCrewMember(mid);
@@ -64,10 +55,7 @@ public class GameController {
         );
     }
 
-    /**
-     * POST /game
-     * Create a new game
-     */
+    //POST /game
     @PostMapping
     public Result createGame(@Valid @RequestBody Game game) {
         Game saved = gameService.save(game);
@@ -79,10 +67,7 @@ public class GameController {
         );
     }
 
-    /**
-     * GET /game/{gameId}
-     * Retrieve one game
-     */
+    //GET /game/{gameId}
     @GetMapping("/{gameId}")
     public Result getGame(@PathVariable Integer gameId) {
         Game found = gameService.findById(gameId);

@@ -10,11 +10,10 @@ import java.util.List;
 
 @Repository
 public interface GameRepository extends JpaRepository<Game, Integer> {
-    // UC‑5 (general schedule) – all games in a schedule
+    // UC‑5 all games in a schedule
     List<Game> findBySchedule_ScheduleID(Integer scheduleID);
 
-    // UC‑4 (my assigned games) – games where a given crew member is in the crewList
-    // possibly use code below for custom query with SQL
+    // UC‑4 games where a given crew member is in the crewList
     @Query("select g from Game g join g.crewList cm where cm.crewMemberID = :memberId")
     List<Game> findByCrewMemberId(@Param("memberId") Integer memberId);
 }

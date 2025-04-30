@@ -1,4 +1,4 @@
-package test.java.edu.tcu.cs.frogcrewbackend.integration;
+package edu.tcu.cs.frogcrew.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.tcu.cs.frogcrew.FrogCrewBackendApplication;
@@ -9,6 +9,7 @@ import edu.tcu.cs.frogcrew.system.StatusCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -46,12 +47,6 @@ class FullIntegrationTest {
     void init() {
         baseUrl = "http://localhost:" + port;
     }
-
-//    @Test
-//    void smoke() {
-//        var resp = rest.getForEntity(baseUrl + "/crew", String.class);
-//        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
-//    }
 
     @Test
     void endToEnd_useCases() {
@@ -94,7 +89,7 @@ class FullIntegrationTest {
 
         // UC1: Crew member creates profile (public)
         CrewMember newMember = new CrewMember();
-        newMember.setCrewMemberID(999);
+        newMember.setCrewMemberID(3);
         newMember.setFirstName("Charlie");
         newMember.setLastName("Brown");
         newMember.setEmail("charlie@frogcrew.com");
@@ -110,7 +105,6 @@ class FullIntegrationTest {
 //        assertThat(createCrew.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 //        int charlieId = createCrew.getBody().getCrewMemberID();
 
-        // 1) post expecting a Result
         ResponseEntity<Result> resp1 = rest.postForEntity(
                 baseUrl + "/crew",
                 newMember,
@@ -119,27 +113,24 @@ class FullIntegrationTest {
 
         assertThat(resp1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        // 2) unwrap
         Result resultBody1 = resp1.getBody();
         assertThat(resultBody1).isNotNull();
         assertThat(resultBody1.isFlag()).isTrue();
         assertThat(resultBody1.getCode()).isEqualTo(StatusCode.SUCCESS);
 
-        // 3) extract the data payload as a Map and then read your fields
         @SuppressWarnings("unchecked")
         Map<String,Object> payload1 = (Map<String,Object>) resultBody1.getData();
         Integer charlieId = (Integer) payload1.get("crewMemberID");
         assertThat(charlieId).isEqualTo(3);
 
-        // if you really need a CrewMember instance:
         CrewMember created = mapper.convertValue(payload1, CrewMember.class);
         assertThat(created.getFirstName()).isEqualTo("Charlie");
 
 
 
         // login as Charlie to get JWT (AuthController + JwtProvider)
-          HttpHeaders loginHeaders = new HttpHeaders();
-          loginHeaders.setBasicAuth("charlie@frogcrew.com", "password3");
+        HttpHeaders loginHeaders = new HttpHeaders();
+        loginHeaders.setBasicAuth("charlie@frogcrew.com", "password3");
 //        ResponseEntity<AuthTokenDto> login = rest.exchange(
 //                baseUrl + "/auth/login",
 //                HttpMethod.POST,
@@ -148,8 +139,6 @@ class FullIntegrationTest {
 //        );
 //        assertThat(login.getStatusCode()).isEqualTo(HttpStatus.OK);
 //        String jwt = login.getBody().token();
-
-        // 1) Call expecting a raw Result
         ResponseEntity<Result> resp2 = rest.exchange(
                 baseUrl + "/auth/login",
                 HttpMethod.POST,
@@ -164,21 +153,18 @@ class FullIntegrationTest {
         assertThat(resultBody2.isFlag()).isTrue();
         assertThat(resultBody2.getCode()).isEqualTo(StatusCode.SUCCESS);
 
-// 2) pull the 'data' payload (it comes back as a Map)
         @SuppressWarnings("unchecked")
         Map<String,Object> payload2 = (Map<String,Object>) resultBody2.getData();
 
-// 3) get your JWT
         String jwt = (String) payload2.get("token");
         assertThat(jwt).isNotBlank();
 
 
-
-        // prepare Bearer headers for Charlie
+        // prepare Bearer headers
         HttpHeaders bearer = new HttpHeaders();
         bearer.setBearerAuth(jwt);
 
-        // UC7: Charlie submits availability
+        // UC7: member submits availability
         AvailabilityDto availDto = new AvailabilityDto(charlieId, true, "Available for all games");
         ResponseEntity<Availability> availResp = rest.exchange(
                 baseUrl + "/availability",
@@ -246,7 +232,7 @@ class FullIntegrationTest {
         assertThat(crewed.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(crewed.getBody().getCrewListIDs()).contains(charlieId);
 
-        // UC5: Charlie views general game schedule
+        // UC5: member views general game schedule
         ResponseEntity<Schedule[]> general = rest.exchange(
                 baseUrl + "/schedule",
                 HttpMethod.GET,
@@ -256,7 +242,7 @@ class FullIntegrationTest {
         assertThat(general.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(general.getBody()).isNotEmpty();
 
-        // UC6: Charlie (USER) views crew list for the game
+        // UC6: member views crew list for the game
         ResponseEntity<CrewMember[]> crewForGame = rest.exchange(
                 baseUrl + "/crewSchedule/" + gameId,
                 HttpMethod.GET,
@@ -265,7 +251,7 @@ class FullIntegrationTest {
         );
         assertThat(crewForGame.getBody()).extracting("crewMemberID").contains(charlieId);
 
-        // UC3: Charlie views another crew member’s profile
+        // UC3: member views another crew member’s profile
         ResponseEntity<CrewMember> viewAlice = rest.exchange(
                 baseUrl + "/crew/" + 123,  // Alice’s seeded ID
                 HttpMethod.GET,
@@ -291,4 +277,4 @@ class FullIntegrationTest {
         );
         assertThat(notFound.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
-}
+} //

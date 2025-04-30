@@ -12,15 +12,12 @@ public class Schedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "schedule_id")
     private Integer scheduleID;
 
     @NotBlank
-    @Column(nullable = false)
     private String sport;
 
     @NotBlank
-//    @Column(nullable = false)
     private String season;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
