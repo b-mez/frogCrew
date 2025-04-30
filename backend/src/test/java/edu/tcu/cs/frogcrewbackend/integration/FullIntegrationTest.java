@@ -277,4 +277,4 @@ class FullIntegrationTest {
         );
         assertThat(notFound.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
-}
+} //
